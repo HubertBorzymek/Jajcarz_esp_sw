@@ -110,9 +110,16 @@ static void send_pending_changes(uint32_t now_ms)
     sync_outgoing_t out;
     while (sync_next_outgoing(&s_sync, s_panel, now_ms, &out)) {
         const panel_key_t *key = &s_panel->keys[out.index];
+        protocol_state_change_t change = {
+            .seq      = out.seq,
+            .addr     = key->addr,
+            .state    = key->state,
+            .has_age  = out.has_age,
+            .age_ms   = out.age_ms,
+            .base_rev = out.base_rev,
+        };
         char text[TX_BUFFER_SIZE];
-        size_t length = protocol_encode_state_change(text, sizeof(text), out.seq, key->addr, key->state,
-                                                     out.has_age, out.age_ms);
+        size_t length = protocol_encode_state_change(text, sizeof(text), &change);
         if (length == 0 || !net_send(text)) {
             ESP_LOGW(TAG, "Nie wysłano zmiany %u.%u", key->addr.seg, key->addr.key);
             return;     // brak ack, więc sync ponowi wysyłkę

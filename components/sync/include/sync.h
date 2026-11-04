@@ -15,7 +15,7 @@ typedef struct {
     uint32_t seq;
     uint32_t changed_ms;
     uint32_t sent_ms;
-    uint32_t rev;           // ostatni znany rev klawisza
+    uint32_t rev;           // ostatni znany rev; dla zmiany sprzed restartu stoi w miejscu
 } sync_key_t;
 
 typedef struct {
@@ -28,7 +28,8 @@ typedef struct {
     size_t   index;
     uint32_t seq;
     bool     has_age;
-    uint32_t age_ms;
+    uint32_t age_ms;        // ważne gdy has_age
+    uint32_t base_rev;      // ważne gdy !has_age
 } sync_outgoing_t;
 
 void sync_init(sync_t *sync);

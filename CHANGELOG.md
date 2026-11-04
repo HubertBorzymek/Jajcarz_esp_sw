@@ -19,6 +19,8 @@
 - Lokalne dane w `config/secrets.h`, poza gitem.
 - Niewysłane zmiany, przypisania i numery zmian przetrwają restart.
 - Kolory i jasność ustawiane z serwera i zapisywane we flashu.
+- Po awarii zasilania źródłem prawdy jest serwer: zmiana sprzed restartu przegrywa
+  ze zmianą wykonaną w tym czasie.
 
 ### Zmieniono
 - Kod podzielony z jednego pliku na komponenty.

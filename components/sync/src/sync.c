@@ -4,6 +4,13 @@
 
 #define ACK_TIMEOUT_MS 5000
 
+// Zmiana sprzed restartu nie ma znanego czasu, więc serwer ocenia ją po rev z chwili
+// jej powstania. Ten rev nie może się zmienić, także po kolejnym restarcie.
+static bool keeps_base_rev(const sync_key_t *key)
+{
+    return key->pending && !key->age_known;
+}
+
 void sync_init(sync_t *sync)
 {
     memset(sync, 0, sizeof(*sync));
@@ -51,7 +58,9 @@ static void apply_snapshot_key(sync_t *sync, panel_t *panel, const protocol_key_
         key->pending = false;   // klawisz bez produktu nie ma czego zgłaszać
         return;
     }
-    key->rev = remote->rev;
+    if (!keeps_base_rev(key)) {
+        key->rev = remote->rev;
+    }
     if (!key->pending) {
         panel_set_state(panel, index, remote->state);
     }
@@ -75,7 +84,9 @@ void sync_apply_state_set(sync_t *sync, panel_t *panel, const protocol_state_set
     if (state_set->rev <= key->rev) {
         return;
     }
-    key->rev = state_set->rev;
+    if (!keeps_base_rev(key)) {
+        key->rev = state_set->rev;
+    }
     if (!key->pending) {
         panel_set_state(panel, index, state_set->state);
     }
@@ -112,10 +123,11 @@ bool sync_next_outgoing(sync_t *sync, const panel_t *panel, uint32_t now_ms, syn
         key->sent = true;
         key->sent_ms = now_ms;
         *out = (sync_outgoing_t){
-            .index   = i,
-            .seq     = key->seq,
-            .has_age = key->age_known,
-            .age_ms  = key->age_known ? now_ms - key->changed_ms : 0,
+            .index    = i,
+            .seq      = key->seq,
+            .has_age  = key->age_known,
+            .age_ms   = key->age_known ? now_ms - key->changed_ms : 0,
+            .base_rev = key->rev,
         };
         return true;
     }

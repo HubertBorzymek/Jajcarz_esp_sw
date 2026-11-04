@@ -120,8 +120,8 @@ są przenoszone, więc pierwszy start po aktualizacji pokazuje stany domyślne.
 - [ ] Odłącz panel od sieci, zmień kolor przycisku i naciśnij EN: kolor wraca.
 - [ ] Przywróć sieć: zmiana z panelu pojawia się na stronie.
 - [ ] Zrób to samo, odłączając USB zamiast EN: zmiana też dociera na stronę.
-- [ ] Zmiana sprzed restartu nie ma znanego czasu, więc wygrywa nawet z nowszą
-      zmianą na stronie. Sprawdź, czy takie działanie Ci odpowiada.
+- [ ] Odłącz panel od sieci, zmień kolor przycisku, zmień ten sam klawisz na
+      stronie i naciśnij EN: po połączeniu wygrywa strona, a dioda się dostosowuje.
 
 ### Przypisania
 

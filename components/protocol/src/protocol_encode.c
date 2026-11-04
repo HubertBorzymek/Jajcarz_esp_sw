@@ -28,16 +28,14 @@ size_t protocol_encode_hello(char *buffer, size_t size, const char *device_id, c
     return used == 0 ? 0 : append(buffer, size, used, "]}");
 }
 
-size_t protocol_encode_state_change(char *buffer, size_t size, uint32_t seq, key_addr_t addr,
-                                    panel_state_t state, bool has_age, uint32_t age_ms)
+size_t protocol_encode_state_change(char *buffer, size_t size, const protocol_state_change_t *change)
 {
-    size_t used = append(buffer, size, 0,
-                         "{\"v\":%d,\"t\":\"state_change\",\"seq\":%lu,\"addr\":\"%u.%u\",\"state\":\"%s\"",
-                         PROTOCOL_VERSION, (unsigned long)seq, addr.seg, addr.key, panel_state_name(state));
-    if (used != 0 && has_age) {
-        used = append(buffer, size, used, ",\"age_ms\":%lu", (unsigned long)age_ms);
-    }
-    return used == 0 ? 0 : append(buffer, size, used, "}");
+    return append(buffer, size, 0,
+                  "{\"v\":%d,\"t\":\"state_change\",\"seq\":%lu,\"addr\":\"%u.%u\",\"state\":\"%s\",\"%s\":%lu}",
+                  PROTOCOL_VERSION, (unsigned long)change->seq, change->addr.seg, change->addr.key,
+                  panel_state_name(change->state),
+                  change->has_age ? "age_ms" : "base_rev",
+                  (unsigned long)(change->has_age ? change->age_ms : change->base_rev));
 }
 
 size_t protocol_encode_unassigned_press(char *buffer, size_t size, key_addr_t addr)

@@ -164,7 +164,7 @@ static void test_reconnect_resends_unconfirmed_change(void)
     CHECK(out.age_ms == 200);
 }
 
-static void test_restored_change_is_sent_without_age(void)
+static void test_restored_change_is_sent_with_base_rev(void)
 {
     setup();
     panel_set_state(&s_panel, 0, PANEL_STATE_OUT);
@@ -174,10 +174,33 @@ static void test_restored_change_is_sent_without_age(void)
 
     sync_outgoing_t out;
     CHECK(sync_next_outgoing(&s_sync, &s_panel, 100, &out));
-    CHECK(out.index == 0 && !out.has_age);
+    CHECK(out.index == 0 && !out.has_age && out.base_rev == 7);
+}
 
-    protocol_ack_t ack = { .seq = out.seq, .addr = ADDRS[0], .accepted = true, .state = PANEL_STATE_OUT, .rev = 10 };
+static void test_rejected_restored_change_takes_server_state(void)
+{
+    setup();
+    panel_set_state(&s_panel, 0, PANEL_STATE_OUT);
+    sync_restore_key(&s_sync, 0, true, 7);
+    receive_snapshot(PANEL_STATE_OK, 9);
+    sync_outgoing_t out;
+    sync_next_outgoing(&s_sync, &s_panel, 100, &out);
+
+    protocol_ack_t ack = { .seq = out.seq, .addr = ADDRS[0], .accepted = false, .state = PANEL_STATE_OK, .rev = 9 };
     CHECK(sync_apply_ack(&s_sync, &s_panel, &ack));
+    CHECK(s_panel.keys[0].state == PANEL_STATE_OK);
+    CHECK(s_sync.keys[0].rev == 9);
+}
+
+static void test_base_rev_survives_second_restart(void)
+{
+    setup();
+    sync_restore_key(&s_sync, 0, true, 7);
+    receive_snapshot(PANEL_STATE_OK, 9);
+    protocol_state_set_t state_set = { .addr = ADDRS[0], .state = PANEL_STATE_LOW, .rev = 10 };
+    sync_apply_state_set(&s_sync, &s_panel, &state_set);
+
+    CHECK(s_sync.keys[0].rev == 7);     // tę wartość zapisze persistence
 }
 
 static void test_press_after_restore_has_age_again(void)
@@ -208,7 +231,9 @@ static void test_restored_rev_rejects_stale_state_set(void)
 
 void test_sync_run(void)
 {
-    test_restored_change_is_sent_without_age();
+    test_restored_change_is_sent_with_base_rev();
+    test_rejected_restored_change_takes_server_state();
+    test_base_rev_survives_second_restart();
     test_press_after_restore_has_age_again();
     test_restored_rev_rejects_stale_state_set();
     test_changes_wait_for_snapshot();

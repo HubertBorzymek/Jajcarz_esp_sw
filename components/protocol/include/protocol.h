@@ -66,12 +66,20 @@ typedef struct {
     uint8_t key_count;
 } protocol_segment_t;
 
+typedef struct {
+    uint32_t      seq;
+    key_addr_t    addr;
+    panel_state_t state;
+    bool          has_age;
+    uint32_t      age_ms;       // wysyłane gdy has_age
+    uint32_t      base_rev;     // wysyłane gdy !has_age
+} protocol_state_change_t;
+
 // false dla błędnego JSON, innej wersji protokołu lub nieobsługiwanego typu.
 bool protocol_parse(const char *json, protocol_msg_t *msg);
 
 // Zwracają długość tekstu albo 0, gdy nie mieści się w buforze.
 size_t protocol_encode_hello(char *buffer, size_t size, const char *device_id, const char *fw,
                              const protocol_segment_t *segments, size_t segment_count);
-size_t protocol_encode_state_change(char *buffer, size_t size, uint32_t seq, key_addr_t addr,
-                                    panel_state_t state, bool has_age, uint32_t age_ms);
+size_t protocol_encode_state_change(char *buffer, size_t size, const protocol_state_change_t *change);
 size_t protocol_encode_unassigned_press(char *buffer, size_t size, key_addr_t addr);

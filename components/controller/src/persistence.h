@@ -4,7 +4,7 @@
 #include "panel.h"
 #include "sync.h"
 
-// Wczytuje zapisane dane. Niewysłane zmiany wracają do kolejki bez `age_ms`,
+// Wczytuje zapisane dane. Niewysłane zmiany wracają do kolejki i są wysyłane z `base_rev`,
 // bo po restarcie czas ich powstania jest nieznany.
 void persistence_restore(panel_t *panel, sync_t *sync);
 

@@ -36,6 +36,8 @@ Piny: `components/segments/src/board_rev0.h`.
   tylko przyspieszenie, bo panel bywa offline lub uśpiony.
 - Klient aktualizuje się według `rev` z serwera, nie według `changed_by`.
 - Konflikt: wygrywa nowsza zmiana, czas liczy serwer z `age_ms`.
+- Po awarii wygrywa serwer: zmiana sprzed restartu idzie z `base_rev` i przegrywa
+  z każdą zmianą wykonaną w tym czasie. `sync` nie podnosi wtedy `rev` klawisza.
 - Offline: dla każdego klawisza kolejka trzyma tylko ostatnią zmianę, we flashu.
 - Diody produktów świecą stale. Stan urządzenia tylko na sygnalizatorze.
   Jedyny wyjątek: `identify`.
@@ -105,8 +107,7 @@ z `git describe`.
   zapis stanów po restarcie, sygnalizator na GPIO2.
 - Tagi `v0.2.0` i `v0.3.0` po testach z `docs/TESTY_MANUALNE.md`. Połączenie
   przez prawdziwe Wi-Fi nie było jeszcze sprawdzone.
-- Decyzja do potwierdzenia: zmiana sprzed restartu nie ma `age_ms`, więc serwer
-  liczy czas od odebrania i wygrywa ona z nowszą zmianą w aplikacji.
+- Prace wstrzymane do testów właściciela na sprzęcie. Nie zaczynaj nowego zakresu.
 - Dalej: konfiguracja Wi-Fi bez przebudowy, OTA, czujnik, segmenty.
 - `WS2812_MAX_PIXELS` to 5: dłuższy łańcuch wymaga większej pamięci RMT lub
   obsługi jej uzupełniania z przerwań.

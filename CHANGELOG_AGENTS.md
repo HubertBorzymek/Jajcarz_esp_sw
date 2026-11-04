@@ -2,10 +2,16 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-04 (v0.3.0, base_rev)
+
+- Decyzja właściciela: po awarii wygrywa serwer. `state_change` po restarcie niesie
+  `base_rev` zamiast `age_ms`, serwer przyjmuje tylko gdy `rev` nie wzrósł.
+- Prace wstrzymane do testów na sprzęcie.
+
 ## 2026-11-04 (v0.3.0, bez taga)
 
 - Dodano `controller/src/persistence.c`, `storage` przepisany na bloki danych.
-- `sync_restore_key`: niewysłana zmiana po restarcie idzie bez `age_ms`.
+- `sync_restore_key`: niewysłana zmiana wraca do kolejki po restarcie.
 - Protokół: obsługa `config` i `config` w `snapshot`. Błędna konfiguracja
   w `snapshot` nie unieważnia stanów klawiszy.
 - Serwer: edycja konfiguracji na stronie, `POST /api/devices/{id}/config`.

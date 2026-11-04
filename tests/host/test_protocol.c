@@ -104,11 +104,17 @@ static void test_encode_messages(void)
     CHECK(strcmp(text, "{\"v\":1,\"t\":\"hello\",\"device_id\":\"6825dd21a970\",\"fw\":\"v0.2.0\","
                        "\"segments\":[{\"seg\":0,\"keys\":4},{\"seg\":2,\"keys\":8}]}") == 0);
 
-    protocol_encode_state_change(text, sizeof(text), 17, (key_addr_t){ 0, 2 }, PANEL_STATE_LOW, true, 5400);
+    protocol_state_change_t with_age = {
+        .seq = 17, .addr = { 0, 2 }, .state = PANEL_STATE_LOW, .has_age = true, .age_ms = 5400,
+    };
+    protocol_encode_state_change(text, sizeof(text), &with_age);
     CHECK(strcmp(text, "{\"v\":1,\"t\":\"state_change\",\"seq\":17,\"addr\":\"0.2\",\"state\":\"LOW\",\"age_ms\":5400}") == 0);
 
-    protocol_encode_state_change(text, sizeof(text), 18, (key_addr_t){ 0, 2 }, PANEL_STATE_OUT, false, 0);
-    CHECK(strcmp(text, "{\"v\":1,\"t\":\"state_change\",\"seq\":18,\"addr\":\"0.2\",\"state\":\"OUT\"}") == 0);
+    protocol_state_change_t after_restart = {
+        .seq = 18, .addr = { 0, 2 }, .state = PANEL_STATE_OUT, .has_age = false, .base_rev = 121,
+    };
+    protocol_encode_state_change(text, sizeof(text), &after_restart);
+    CHECK(strcmp(text, "{\"v\":1,\"t\":\"state_change\",\"seq\":18,\"addr\":\"0.2\",\"state\":\"OUT\",\"base_rev\":121}") == 0);
 
     protocol_encode_unassigned_press(text, sizeof(text), (key_addr_t){ 0, 3 });
     CHECK(strcmp(text, "{\"v\":1,\"t\":\"unassigned_press\",\"addr\":\"0.3\"}") == 0);
@@ -119,7 +125,8 @@ static void test_encode_detects_overflow(void)
     char text[32];
     const protocol_segment_t segments[] = { { 0, 4 } };
     CHECK(protocol_encode_hello(text, sizeof(text), "6825dd21a970", "v0.2.0", segments, 1) == 0);
-    CHECK(protocol_encode_state_change(text, 10, 1, (key_addr_t){ 0, 0 }, PANEL_STATE_OK, true, 0) == 0);
+    protocol_state_change_t change = { .seq = 1, .state = PANEL_STATE_OK, .has_age = true };
+    CHECK(protocol_encode_state_change(text, 10, &change) == 0);
 }
 
 void test_protocol_run(void)

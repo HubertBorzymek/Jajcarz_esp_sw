@@ -75,8 +75,9 @@ Wysyłane po połączeniu i ponownie po zmianie zestawu modułów.
 - `seq`: wiąże zmianę z `ack`. Po restarcie ESP zaczyna od 1, więc serwer tylko
   odsyła tę wartość i nie wyciąga z niej wniosków. Brak `ack` przez 5 s powoduje
   ponowną wysyłkę, a serwer musi to bezpiecznie obsłużyć.
-- `age_ms`: ile czasu temu kliknięto. Pole jest pomijane, gdy czas jest nieznany,
-  np. po utracie zasilania.
+- `age_ms`: ile czasu temu kliknięto.
+- `base_rev`: wysyłany zamiast `age_ms`, gdy czas jest nieznany, czyli po restarcie
+  panelu. To `rev` klawisza znany panelowi w chwili zmiany, np. `"base_rev": 121`.
 
 ### `unassigned_press`
 
@@ -147,10 +148,14 @@ diod produktów.
 
 Wygrywa nowsza zmiana.
 
-1. Serwer liczy czas zmiany: `czas_odebrania - age_ms`. Bez `age_ms` przyjmuje
-   czas odebrania.
+1. Serwer liczy czas zmiany: `czas_odebrania - age_ms`.
 2. Jeśli ten czas jest nowszy niż `changed_at` klawisza, zmiana jest przyjęta,
    a `rev` rośnie.
 3. W przeciwnym razie serwer odsyła `accepted: false` i obowiązujący stan.
+
+Zmiana z `base_rev` powstała przed awarią, więc jej czas jest nieznany i wygrywa
+serwer. Jest przyjęta tylko wtedy, gdy `rev` klawisza na serwerze nie jest wyższy
+niż `base_rev`, czyli nikt nie zmienił klawisza w tym czasie. Jako `changed_at`
+serwer zapisuje czas odebrania. Wiadomość bez `age_ms` i `base_rev` jest odrzucana.
 
 Po przyjęciu zmiany serwer powiadamia pozostałych klientów.
