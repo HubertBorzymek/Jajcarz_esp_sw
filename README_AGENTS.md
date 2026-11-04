@@ -22,7 +22,7 @@ Zakres tego repo: tylko ESP32.
 ## Sprzęt rev0
 
 LED WS2812B-V6 ×4: GPIO13, GRB, 800 kHz. Klawisze do GND z pull-upem:
-GPIO32, 33, 25, 26 (`addr` 0.0 do 0.3). Sygnalizator: GPIO2, do potwierdzenia.
+GPIO32, 33, 25, 26 (`addr` 0.0 do 0.3). Sygnalizator: GPIO2.
 Flash 4 MB, tablica partycji `partitions.csv` (ota_0, ota_1 po 1,875 MB).
 Piny: `components/segments/src/board_rev0.h`.
 
@@ -103,8 +103,6 @@ z `git describe`.
 
 ## Otwarte
 
-- Tag `v0.1.0` po potwierdzeniu sprzętu przez właściciela: diody, klawisze,
-  zapis stanów po restarcie, sygnalizator na GPIO2.
 - Tagi `v0.2.0` i `v0.3.0` po testach z `docs/TESTY_MANUALNE.md`. Połączenie
   przez prawdziwe Wi-Fi nie było jeszcze sprawdzone.
 - Prace wstrzymane do testów właściciela na sprzęcie. Nie zaczynaj nowego zakresu.

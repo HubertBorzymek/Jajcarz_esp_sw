@@ -2,6 +2,12 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-04 (tag v0.1.0)
+
+- Właściciel zaliczył sekcję `v0.1.0`, w tym GPIO2. Test wykonano na firmware
+  z gałęzi `rev0` (kod `v0.3.0`), tag stoi na `08d49b2`, czyli zakresie tej wersji.
+- Następny krok: testy `v0.2.0` na prawdziwym Wi-Fi.
+
 ## 2026-11-04 (v0.3.0, base_rev)
 
 - Decyzja właściciela: po awarii wygrywa serwer. `state_change` po restarcie niesie

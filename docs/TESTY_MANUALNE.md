@@ -19,10 +19,10 @@ widzieć log. Jeśli port jest zajęty, zamknij monitor w VS Code.
 
 ### Start
 
-- [ ] Po resecie (EN) wszystkie 4 diody świecą kolejno na czerwono, zielono, niebiesko.
-- [ ] Każdy kolor trwa około 0,3 s.
-- [ ] Log pokazuje `Jajcarz <wersja>` i `Gotowe, klawisze: 4`.
-- [ ] Przy pierwszym uruchomieniu po teście wszystkie diody są zielone.
+- [x] Po resecie (EN) wszystkie 4 diody świecą kolejno na czerwono, zielono, niebiesko.
+- [x] Każdy kolor trwa około 0,3 s.
+- [x] Log pokazuje `Jajcarz <wersja>` i `Gotowe, klawisze: 4`.
+- [x] Przy pierwszym uruchomieniu po teście wszystkie diody są zielone.
 
 ### Przyciski
 
@@ -33,24 +33,24 @@ widzieć log. Jeśli port jest zajęty, zamknij monitor w VS Code.
 | SW3 | 0.2 |
 | SW4 | 0.3 |
 
-- [ ] SW1: zielony → żółty → czerwony → zielony, zmienia się tylko dioda 1.
-- [ ] SW2: to samo, tylko dioda 2.
-- [ ] SW3: to samo, tylko dioda 3.
-- [ ] SW4: to samo, tylko dioda 4.
-- [ ] Każde naciśnięcie daje dokładnie jeden wpis w logu, np. `0.1 -> LOW`.
-- [ ] Przytrzymanie przez 3 s daje jedną zmianę.
-- [ ] Szybkie klikanie nie daje podwójnych zmian.
-- [ ] Przytrzymanie przycisku podczas resetu nie zmienia stanu.
-- [ ] Żółty nie wpada w zieleń.
+- [x] SW1: zielony → żółty → czerwony → zielony, zmienia się tylko dioda 1.
+- [x] SW2: to samo, tylko dioda 2.
+- [x] SW3: to samo, tylko dioda 3.
+- [x] SW4: to samo, tylko dioda 4.
+- [x] Każde naciśnięcie daje dokładnie jeden wpis w logu, np. `0.1 -> LOW`.
+- [x] Przytrzymanie przez 3 s daje jedną zmianę.
+- [x] Szybkie klikanie nie daje podwójnych zmian.
+- [x] Przytrzymanie przycisku podczas resetu nie zmienia stanu.
+- [x] Żółty nie wpada w zieleń.
 
 ### Pamięć stanów
 
-- [ ] Ustaw różne kolory i naciśnij EN: po teście startowym kolory wracają.
-- [ ] Ustaw różne kolory i odłącz USB na 5 s: po podłączeniu kolory wracają.
+- [x] Ustaw różne kolory i naciśnij EN: po teście startowym kolory wracają.
+- [x] Ustaw różne kolory i odłącz USB na 5 s: po podłączeniu kolory wracają.
 
 ### Dioda sygnalizacyjna
 
-- [ ] Dioda na płytce miga mniej więcej raz na sekundę.
+- [x] Dioda na płytce miga mniej więcej raz na sekundę.
 
 Jeśli nie miga, sprawdź, czy jakakolwiek dioda na płytce reaguje. Wtedy trzeba
 zmienić `STATUS_LED_GPIO` w `components/status_led/src/status_led.c`.

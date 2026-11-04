@@ -52,7 +52,7 @@ ESP32 DevKit V1 z ESP32-WROOM-32 i 4 MB flash, na uniwersalce.
 |---|---|
 | dane WS2812B-V6 (4 szt., przez bufor 5 V) | GPIO13 |
 | SW1 / SW2 / SW3 / SW4 (do GND) | GPIO32 / 33 / 25 / 26 |
-| sygnalizator: dioda na płytce | GPIO2 (do potwierdzenia) |
+| sygnalizator: dioda na płytce | GPIO2 |
 
 Docelowo płyta główna i moduły z przyciskami (1+n segmentów). Później dojdzie
 czujnik odległości z trzema trybami: uśpienie, same diody, pełna obsługa.
