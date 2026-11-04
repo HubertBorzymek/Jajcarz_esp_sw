@@ -58,7 +58,16 @@ Priorytet właściciela projektu: czysty, czytelny kod podzielony na pliki i fol
 - Moduły wyższego poziomu nie znają pinów ani sposobu podłączenia segmentu.
 - Nazwy w kodzie po angielsku, komentarze po polsku, z prefiksem modułu w API.
 
-Testy logiki bez płytki: `powershell -File tests\host\run.ps1` (MSVC z VS).
+Testy logiki bez płytki: `powershell -File tests\host\run.ps1` (MSVC z VS,
+potrzebuje `managed_components`, czyli wcześniejszego `idf.py build`).
+Testy na płytce: `docs/TESTY_MANUALNE.md`, dopisuj nowe przy każdej wersji.
+Lokalne sekrety: `config/secrets.h`, tworzony ze wzoru przy pierwszym buildzie.
+Pułapki:
+- Pusty SSID sprawia, że kompilator usuwa kod sieciowy. Build bez Wi-Fi nie
+  sprawdza linkowania `net`, do tego użyj tymczasowego SSID.
+- Skopiowany plik zachowuje starą datę i ninja go pomija. Po `Copy-Item` na
+  `secrets.h` ustaw `LastWriteTime`.
+- Firmware z siecią ma około 1 MB, a slot 1,875 MB.
 Konfiguracja projektu: `sdkconfig.defaults`, `sdkconfig` jest generowany.
 
 Układ:
@@ -73,10 +82,13 @@ components/
   presence/            tryby ACTIVE/DISPLAY/SLEEP
   status_led/          sygnalizator
   storage/             NVS: stany; później konfiguracja i kolejka zmian
-  net/                 Wi-Fi, WebSocket (v0.2.0)
-  protocol/            kodowanie i dekodowanie JSON (v0.2.0)
-  sync/                snapshot, ack, kolejka, konflikty (v0.2.0-v0.3.0)
+  net/                 Wi-Fi, WebSocket, kolejka odebranych wiadomości
+  protocol/            kodowanie i dekodowanie JSON, bez sprzętu
+  sync/                snapshot, ack, oczekujące zmiany, rev, bez sprzętu
 ```
+
+`controller/src/link.c` spina `net`, `protocol`, `sync` i `storage`. Klient
+WebSocket działa w swoim zadaniu, a wiadomości są przetwarzane w pętli głównej.
 
 ## Wersjonowanie
 
@@ -87,6 +99,9 @@ z `git describe`.
 
 - Tag `v0.1.0` po potwierdzeniu sprzętu przez właściciela: diody, klawisze,
   zapis stanów po restarcie, sygnalizator na GPIO2.
-- Przed `v0.2.0`: sprawdzić komponent klienta WebSocket dla IDF 6.1.
+- Tag `v0.2.0` po testach z `docs/TESTY_MANUALNE.md`. Połączenie przez
+  prawdziwe Wi-Fi nie było jeszcze sprawdzone.
+- `v0.3.0`: kolejka zmian, przypisania i `rev` w NVS, stosowanie `config`,
+  `age_ms` pomijane po utracie zasilania. Dziś restart gubi niewysłane zmiany.
 - `WS2812_MAX_PIXELS` to 5: dłuższy łańcuch wymaga większej pamięci RMT lub
   obsługi jej uzupełniania z przerwań.

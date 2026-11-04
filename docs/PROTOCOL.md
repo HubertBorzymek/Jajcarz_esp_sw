@@ -1,6 +1,7 @@
 # Protokół Jajcarz
 
-Wersja protokołu: **1** (projekt, jeszcze nie zaimplementowany).
+Wersja protokołu: **1**. Firmware `v0.2.0` nie stosuje jeszcze konfiguracji:
+ignoruje wiadomość `config` i to pole w `snapshot`. Dojdzie to w `v0.3.0`.
 
 Wspólny kontrakt dla firmware ESP32, serwera testowego i aplikacji webowej.
 Zmiana niezgodna wstecz wymaga podniesienia pola `v`.
@@ -72,7 +73,9 @@ Wysyłane po połączeniu i ponownie po zmianie zestawu modułów.
   "age_ms": 5400 }
 ```
 
-- `seq`: numer rosnący w ramach urządzenia, wiąże zmianę z `ack`.
+- `seq`: wiąże zmianę z `ack`. Po restarcie ESP zaczyna od 1, więc serwer tylko
+  odsyła tę wartość i nie wyciąga z niej wniosków. Brak `ack` przez 5 s powoduje
+  ponowną wysyłkę, a serwer musi to bezpiecznie obsłużyć.
 - `age_ms`: ile czasu temu kliknięto. Pole jest pomijane, gdy czas jest nieznany,
   np. po utracie zasilania.
 

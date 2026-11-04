@@ -2,6 +2,19 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-04 (v0.2.0, bez taga)
+
+- Dodano `net`, `protocol`, `sync`, `controller/src/link.c`, `config/secrets.example.h`.
+- Zależności: `esp_websocket_client` 1.8.0, `cjson` 1.7.19, wersje w `dependencies.lock`.
+- Serwer testowy gotowy, repo `Jajcarz_test_server`. Znaleziono i poprawiono brak
+  odpowiedzi serwera na zamknięcie WebSocket.
+- Zweryfikowano: testy hosta OK, 15 testów serwera OK, serwer na Kestrelu (strona,
+  API, `hello` -> `snapshot`), build z tymczasowym SSID linkuje `net` i startuje na
+  płytce, ponawia Wi-Fi bez awarii. Wersja bez konfiguracji działa offline.
+- Niezweryfikowane: prawdziwe Wi-Fi i ESP32 z serwerem, całość testów manualnych.
+- Na płytce: firmware bez konfiguracji, `v0.0.0-2-g08d49b2-dirty`.
+- Następny krok: testy właściciela, tagi `v0.1.0` i `v0.2.0`, potem `v0.3.0`.
+
 ## 2026-11-04 (v0.1.0, bez taga)
 
 - `main.c` podzielony na komponenty, układ w `README_AGENTS.md`.

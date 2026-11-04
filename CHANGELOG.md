@@ -12,6 +12,11 @@
 - Partycje pod aktualizacje OTA i konfiguracja w `sdkconfig.defaults`.
 - Numer wersji firmware w logu startowym.
 - Testy logiki uruchamiane bez płytki.
+- Lista testów manualnych: `docs/TESTY_MANUALNE.md`.
+- Połączenie z serwerem: Wi-Fi, WebSocket i protokół v1.
+- Synchronizacja stanów w obie strony, praca bez sieci do restartu, konflikty.
+- Przypisywanie klawiszy i identyfikacja klawisza miganiem.
+- Lokalne dane w `config/secrets.h`, poza gitem.
 
 ### Zmieniono
 - Kod podzielony z jednego pliku na komponenty.

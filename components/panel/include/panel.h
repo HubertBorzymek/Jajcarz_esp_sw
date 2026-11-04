@@ -35,6 +35,9 @@ typedef struct {
     panel_key_t    keys[PANEL_MAX_KEYS];
     size_t         key_count;
     panel_config_t config;
+    size_t         identify_index;
+    uint32_t       identify_start_ms;
+    uint32_t       identify_duration_ms;    // 0 = identyfikacja nieaktywna
 } panel_t;
 
 // Wszystkie klawisze startują jako przypisane w stanie OK. Serwer zmieni
@@ -45,7 +48,14 @@ panel_press_t panel_press(panel_t *panel, size_t index);
 bool panel_set_state(panel_t *panel, size_t index, panel_state_t state);
 bool panel_set_assigned(panel_t *panel, size_t index, bool assigned);
 
-// Kolor do wysłania na diodę, z uwzględnieniem jasności i przypisania.
-rgb_t panel_led_color(const panel_t *panel, size_t index);
+// Miganie wskazanym klawiszem, także nieprzypisanym, np. przy przypisywaniu produktu.
+void panel_identify(panel_t *panel, size_t index, uint32_t duration_ms, uint32_t now_ms);
+
+// Kolor do wysłania na diodę, z uwzględnieniem jasności, przypisania i identyfikacji.
+rgb_t panel_led_color(const panel_t *panel, size_t index, uint32_t now_ms);
+
+// Indeks klawisza o podanym adresie.
+bool panel_find(const panel_t *panel, key_addr_t addr, size_t *index);
 
 const char *panel_state_name(panel_state_t state);
+bool panel_state_from_name(const char *name, panel_state_t *state);
