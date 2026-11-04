@@ -1,6 +1,14 @@
 # Historia zmian
 
-## Niewydane
+## v0.3.0 - 2026-11-04
+
+### Dodano
+- Niewysłane zmiany, przypisania i numery zmian przetrwają restart.
+- Kolory i jasność ustawiane z serwera i zapisywane we flashu.
+- Po awarii zasilania źródłem prawdy jest serwer: zmiana sprzed restartu przegrywa
+  ze zmianą wykonaną w tym czasie.
+
+## v0.2.0 - 2026-11-04
 
 ### Dodano
 - Lista testów manualnych: `docs/TESTY_MANUALNE.md`.
@@ -8,10 +16,6 @@
 - Synchronizacja stanów w obie strony, praca bez sieci do restartu, konflikty.
 - Przypisywanie klawiszy i identyfikacja klawisza miganiem.
 - Lokalne dane w `config/secrets.h`, poza gitem.
-- Niewysłane zmiany, przypisania i numery zmian przetrwają restart.
-- Kolory i jasność ustawiane z serwera i zapisywane we flashu.
-- Po awarii zasilania źródłem prawdy jest serwer: zmiana sprzed restartu przegrywa
-  ze zmianą wykonaną w tym czasie.
 
 ## v0.1.0 - 2026-11-04
 

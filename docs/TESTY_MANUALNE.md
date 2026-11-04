@@ -76,41 +76,41 @@ Komputer i ESP32 muszą być w tej samej sieci, a ESP32 obsługuje tylko 2,4 GHz
 
 ### Połączenie
 
-- [ ] Log pokazuje połączenie z Wi-Fi i serwerem.
-- [ ] Dioda na płytce przestaje migać i świeci stale.
-- [ ] Panel pojawia się na stronie serwera z 4 klawiszami.
-- [ ] Diody na panelu pokazują stany ze strony.
+- [x] Log pokazuje połączenie z Wi-Fi i serwerem.
+- [x] Dioda na płytce przestaje migać i świeci stale.
+- [x] Panel pojawia się na stronie serwera z 4 klawiszami.
+- [x] Diody na panelu pokazują stany ze strony.
 
 ### Panel → serwer
 
-- [ ] Naciśnięcie przycisku zmienia stan na stronie w ciągu około 1 s.
-- [ ] Strona pokazuje autora zmiany `device:<id>` i czas.
-- [ ] Dioda na płytce krótko gaśnie po potwierdzeniu przez serwer.
+- [x] Naciśnięcie przycisku zmienia stan na stronie w ciągu około 1 s.
+- [x] Strona pokazuje autora zmiany `device:<id>` i czas.
+- [x] Dioda na płytce krótko gaśnie po potwierdzeniu przez serwer.
 
 ### Serwer → panel
 
-- [ ] Zmiana stanu na stronie zmienia diodę w ciągu około 1 s.
-- [ ] Strona pokazuje autora `web:test`.
-- [ ] Odznaczenie „przypisany” gasi diodę klawisza.
-- [ ] Naciśnięcie nieprzypisanego klawisza nie zmienia stanu, a strona pokazuje je w dzienniku.
-- [ ] Ponowne przypisanie zapala diodę.
-- [ ] Przycisk „Identyfikuj” miga wybraną diodą przez około 3 s, także nieprzypisaną.
+- [x] Zmiana stanu na stronie zmienia diodę w ciągu około 1 s.
+- [x] Strona pokazuje autora `web:test`.
+- [x] Odznaczenie „przypisany” gasi diodę klawisza.
+- [x] Naciśnięcie nieprzypisanego klawisza nie zmienia stanu, a strona pokazuje je w dzienniku.
+- [x] Ponowne przypisanie zapala diodę.
+- [x] Przycisk „Identyfikuj” miga wybraną diodą przez około 3 s, także nieprzypisaną.
 
 ### Utrata połączenia
 
-- [ ] Zatrzymanie serwera: dioda na płytce wraca do migania, a panel nadal reaguje na przyciski.
-- [ ] Po ponownym uruchomieniu serwera zmiany z panelu trafiają na stronę.
-- [ ] Wyłączenie Wi-Fi na routerze: panel działa i sam wraca do sieci po włączeniu.
-- [ ] Zmień stan na stronie przy odłączonym panelu: po połączeniu dioda się aktualizuje.
-- [ ] Zmień ten sam klawisz najpierw na panelu offline, potem na stronie: po połączeniu wygrywa strona.
-- [ ] Zmień ten sam klawisz najpierw na stronie, potem na panelu offline: po połączeniu wygrywa panel.
+- [x] Zatrzymanie serwera: dioda na płytce wraca do migania, a panel nadal reaguje na przyciski.
+- [x] Po ponownym uruchomieniu serwera zmiany z panelu trafiają na stronę.
+- [x] Wyłączenie Wi-Fi na routerze: panel działa i sam wraca do sieci po włączeniu.
+- [x] Zmień stan na stronie przy odłączonym panelu: po połączeniu dioda się aktualizuje.
+- [x] Zmień ten sam klawisz najpierw na panelu offline, potem na stronie: po połączeniu wygrywa strona.
+- [x] Zmień ten sam klawisz najpierw na stronie, potem na panelu offline: po połączeniu wygrywa panel.
 
 Serwer testowy trzyma dane w pamięci, więc jego restart przywraca stany OK.
 Do testów konfliktów odłącz ESP32 od sieci, zamiast zatrzymywać serwer.
 
 ### Bez konfiguracji
 
-- [ ] Z pustą nazwą Wi-Fi panel działa jak w `v0.1.0`, a log pokazuje brak konfiguracji.
+- [x] Z pustą nazwą Wi-Fi panel działa jak w `v0.1.0`, a log pokazuje brak konfiguracji.
 
 Po zaliczeniu tej sekcji: tag `v0.2.0`.
 
@@ -121,22 +121,22 @@ są przenoszone, więc pierwszy start po aktualizacji pokazuje stany domyślne.
 
 ### Niewysłane zmiany
 
-- [ ] Odłącz panel od sieci, zmień kolor przycisku i naciśnij EN: kolor wraca.
-- [ ] Przywróć sieć: zmiana z panelu pojawia się na stronie.
-- [ ] Zrób to samo, odłączając USB zamiast EN: zmiana też dociera na stronę.
-- [ ] Odłącz panel od sieci, zmień kolor przycisku, zmień ten sam klawisz na
+- [x] Odłącz panel od sieci, zmień kolor przycisku i naciśnij EN: kolor wraca.
+- [x] Przywróć sieć: zmiana z panelu pojawia się na stronie.
+- [x] Zrób to samo, odłączając USB zamiast EN: zmiana też dociera na stronę.
+- [x] Odłącz panel od sieci, zmień kolor przycisku, zmień ten sam klawisz na
       stronie i naciśnij EN: po połączeniu wygrywa strona, a dioda się dostosowuje.
 
 ### Przypisania
 
-- [ ] Odznacz „przypisany” na stronie: dioda gaśnie.
-- [ ] Odłącz panel od sieci i naciśnij EN: ta dioda nadal jest zgaszona.
+- [x] Odznacz „przypisany” na stronie: dioda gaśnie.
+- [x] Odłącz panel od sieci i naciśnij EN: ta dioda nadal jest zgaszona.
 
 ### Konfiguracja
 
-- [ ] Zmiana jasności na stronie zmienia jasność diod.
-- [ ] Zmiana koloru stanu na stronie zmienia kolor diod w tym stanie.
-- [ ] Odłącz panel od sieci i naciśnij EN: jasność i kolory zostają.
-- [ ] Zmień konfigurację przy odłączonym panelu: po połączeniu panel ją stosuje.
+- [x] Zmiana jasności na stronie zmienia jasność diod.
+- [x] Zmiana koloru stanu na stronie zmienia kolor diod w tym stanie.
+- [x] Odłącz panel od sieci i naciśnij EN: jasność i kolory zostają.
+- [x] Zmień konfigurację przy odłączonym panelu: po połączeniu panel ją stosuje.
 
 Po zaliczeniu tej sekcji: tag `v0.3.0`.

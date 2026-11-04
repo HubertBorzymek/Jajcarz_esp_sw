@@ -103,9 +103,8 @@ z `git describe`.
 
 ## Otwarte
 
-- Tagi `v0.2.0` i `v0.3.0` po testach z `docs/TESTY_MANUALNE.md`. Połączenie
-  przez prawdziwe Wi-Fi nie było jeszcze sprawdzone.
-- Prace wstrzymane do testów właściciela na sprzęcie. Nie zaczynaj nowego zakresu.
-- Dalej: konfiguracja Wi-Fi bez przebudowy, OTA, czujnik, segmenty.
+- Testy sprzętowe do `v0.3.0` zaliczone. Nowy zakres tylko po decyzji właściciela.
+- Dalej: połączenie z aplikacją na Azure, konfiguracja Wi-Fi bez przebudowy, OTA,
+  odporność, czujnik, segmenty, docelowy sygnalizator.
 - `WS2812_MAX_PIXELS` to 5: dłuższy łańcuch wymaga większej pamięci RMT lub
   obsługi jej uzupełniania z przerwań.

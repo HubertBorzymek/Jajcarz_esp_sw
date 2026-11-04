@@ -2,6 +2,12 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-04 (tagi v0.2.0 i v0.3.0)
+
+- Właściciel zgłosił „wszystko przeszło”, w tym pierwsze połączenie przez Wi-Fi.
+  Sekcje `v0.2.0` i `v0.3.0` odhaczono na tej podstawie, bez szczegółów.
+- Następny krok: decyzja właściciela o kolejnym zakresie, patrz `Otwarte`.
+
 ## 2026-11-04 (tag v0.1.0)
 
 - Właściciel zaliczył sekcję `v0.1.0`, w tym GPIO2. Test wykonano na firmware
