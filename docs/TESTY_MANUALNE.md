@@ -4,14 +4,18 @@ Testy wymagające płytki. Wynik zaznacz `[x]`, a problem opisz pod punktem.
 
 ## v0.1.0: panel bez sieci
 
-Przygotowanie: płytka podłączona przez USB, w PowerShell:
+Przygotowanie: płytka podłączona przez USB, w nowym oknie PowerShell:
 
 ```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 . C:\Espressif\tools\Microsoft.v6.1.PowerShell_profile.ps1
+cd C:\Users\leemi\Documents\Projects\Esp32\Jajcarz_sw
 idf.py -p COM3 flash monitor
 ```
 
-Wyjście z monitora: `Ctrl+]`. Pozostaw monitor otwarty, żeby widzieć log.
+Pierwsza linia zezwala na skrypty tylko w tym oknie. Trzeba powtórzyć te polecenia
+w każdym nowym oknie. Wyjście z monitora: `Ctrl+]`. Pozostaw monitor otwarty, żeby
+widzieć log. Jeśli port jest zajęty, zamknij monitor w VS Code.
 
 ### Start
 

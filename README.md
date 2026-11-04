@@ -62,6 +62,7 @@ czujnik odległości z trzema trybami: uśpienie, same diody, pełna obsługa.
 Wymagany ESP-IDF 6.1. Z katalogu projektu, w PowerShell:
 
 ```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 . C:\Espressif\tools\Microsoft.v6.1.PowerShell_profile.ps1
 idf.py build
 idf.py -p COM3 flash monitor
