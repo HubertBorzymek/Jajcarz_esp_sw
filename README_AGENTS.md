@@ -23,7 +23,8 @@ Zakres tego repo: tylko ESP32.
 
 LED WS2812B-V6 ×4: GPIO13, GRB, 800 kHz. Klawisze do GND z pull-upem:
 GPIO32, 33, 25, 26 (`addr` 0.0 do 0.3). Sygnalizator: GPIO2, do potwierdzenia.
-Flash fizycznie 4 MB, w konfiguracji jeszcze 2 MB.
+Flash 4 MB, tablica partycji `partitions.csv` (ota_0, ota_1 po 1,875 MB).
+Piny: `components/segments/src/board_rev0.h`.
 
 ## Wiążące decyzje
 
@@ -57,16 +58,21 @@ Priorytet właściciela projektu: czysty, czytelny kod podzielony na pliki i fol
 - Moduły wyższego poziomu nie znają pinów ani sposobu podłączenia segmentu.
 - Nazwy w kodzie po angielsku, komentarze po polsku, z prefiksem modułu w API.
 
-Docelowy układ:
+Testy logiki bez płytki: `powershell -File tests\host\run.ps1` (MSVC z VS).
+Konfiguracja projektu: `sdkconfig.defaults`, `sdkconfig` jest generowany.
+
+Układ:
 
 ```text
 main/main.c            start aplikacji
 components/
+  jajcarz_types/       typy wspólne: rgb_t, key_addr_t
+  controller/          spina moduły, pętla główna, test startowy
   segments/            interfejs segmentu, sterownik GPIO + WS2812 (RMT)
-  panel/               stany, cykl OK/LOW/OUT, adresy, stan -> kolor
+  panel/               stany, cykl OK/LOW/OUT, debouncing, stan -> kolor
   presence/            tryby ACTIVE/DISPLAY/SLEEP
   status_led/          sygnalizator
-  storage/             NVS: stany, konfiguracja, kolejka zmian
+  storage/             NVS: stany; później konfiguracja i kolejka zmian
   net/                 Wi-Fi, WebSocket (v0.2.0)
   protocol/            kodowanie i dekodowanie JSON (v0.2.0)
   sync/                snapshot, ack, kolejka, konflikty (v0.2.0-v0.3.0)
@@ -77,9 +83,10 @@ components/
 Praca na gałęzi `rev0`, wersje jako tagi `vX.Y.Z`. Numer firmware pochodzi
 z `git describe`.
 
-## Do zrobienia przed v0.1.0
+## Otwarte
 
-- `sdkconfig` jest w `.gitignore`: dodać `sdkconfig.defaults` bez sekretów.
-- Ustawić flash na 4 MB i tablicę partycji z OTA.
-- Potwierdzić diodę na GPIO2.
-- Sprawdzić komponent klienta WebSocket dla IDF 6.1 (przed `v0.2.0`).
+- Tag `v0.1.0` po potwierdzeniu sprzętu przez właściciela: diody, klawisze,
+  zapis stanów po restarcie, sygnalizator na GPIO2.
+- Przed `v0.2.0`: sprawdzić komponent klienta WebSocket dla IDF 6.1.
+- `WS2812_MAX_PIXELS` to 5: dłuższy łańcuch wymaga większej pamięci RMT lub
+  obsługi jej uzupełniania z przerwań.

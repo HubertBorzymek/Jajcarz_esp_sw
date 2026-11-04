@@ -67,6 +67,12 @@ idf.py build
 idf.py -p COM3 flash monitor
 ```
 
+Testy logiki bez płytki (wymagają Visual Studio z narzędziami C++):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tests\host\run.ps1
+```
+
 ## Wersje
 
 - Gałąź `revN` oznacza generację prototypu, obecnie `rev0`.

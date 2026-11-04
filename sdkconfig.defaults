@@ -1,0 +1,5 @@
+# Konfiguracja projektu bez sekretów. Dane Wi-Fi i tokeny nie trafiają do repo.
+CONFIG_IDF_TARGET="esp32"
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
