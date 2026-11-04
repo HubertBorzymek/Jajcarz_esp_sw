@@ -164,8 +164,53 @@ static void test_reconnect_resends_unconfirmed_change(void)
     CHECK(out.age_ms == 200);
 }
 
+static void test_restored_change_is_sent_without_age(void)
+{
+    setup();
+    panel_set_state(&s_panel, 0, PANEL_STATE_OUT);
+    sync_restore_key(&s_sync, 0, true, 7);
+    receive_snapshot(PANEL_STATE_OK, 9);
+    CHECK(s_panel.keys[0].state == PANEL_STATE_OUT);
+
+    sync_outgoing_t out;
+    CHECK(sync_next_outgoing(&s_sync, &s_panel, 100, &out));
+    CHECK(out.index == 0 && !out.has_age);
+
+    protocol_ack_t ack = { .seq = out.seq, .addr = ADDRS[0], .accepted = true, .state = PANEL_STATE_OUT, .rev = 10 };
+    CHECK(sync_apply_ack(&s_sync, &s_panel, &ack));
+}
+
+static void test_press_after_restore_has_age_again(void)
+{
+    setup();
+    sync_restore_key(&s_sync, 0, true, 7);
+    receive_snapshot(PANEL_STATE_OK, 9);
+    press(0, 1000);
+
+    sync_outgoing_t out;
+    CHECK(sync_next_outgoing(&s_sync, &s_panel, 1500, &out));
+    CHECK(out.has_age && out.age_ms == 500);
+}
+
+static void test_restored_rev_rejects_stale_state_set(void)
+{
+    setup();
+    sync_restore_key(&s_sync, 0, false, 7);
+
+    protocol_state_set_t stale = { .addr = ADDRS[0], .state = PANEL_STATE_OUT, .rev = 7 };
+    sync_apply_state_set(&s_sync, &s_panel, &stale);
+    CHECK(s_panel.keys[0].state == PANEL_STATE_OK);
+
+    sync_outgoing_t out;
+    receive_snapshot(PANEL_STATE_OK, 7);
+    CHECK(!sync_next_outgoing(&s_sync, &s_panel, 100, &out));
+}
+
 void test_sync_run(void)
 {
+    test_restored_change_is_sent_without_age();
+    test_press_after_restore_has_age_again();
+    test_restored_rev_rejects_stale_state_set();
     test_changes_wait_for_snapshot();
     test_snapshot_does_not_overwrite_pending_change();
     test_snapshot_applies_assignment_and_drops_its_pending_change();

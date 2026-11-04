@@ -29,12 +29,15 @@ size_t protocol_encode_hello(char *buffer, size_t size, const char *device_id, c
 }
 
 size_t protocol_encode_state_change(char *buffer, size_t size, uint32_t seq, key_addr_t addr,
-                                    panel_state_t state, uint32_t age_ms)
+                                    panel_state_t state, bool has_age, uint32_t age_ms)
 {
-    return append(buffer, size, 0,
-                  "{\"v\":%d,\"t\":\"state_change\",\"seq\":%lu,\"addr\":\"%u.%u\",\"state\":\"%s\",\"age_ms\":%lu}",
-                  PROTOCOL_VERSION, (unsigned long)seq, addr.seg, addr.key, panel_state_name(state),
-                  (unsigned long)age_ms);
+    size_t used = append(buffer, size, 0,
+                         "{\"v\":%d,\"t\":\"state_change\",\"seq\":%lu,\"addr\":\"%u.%u\",\"state\":\"%s\"",
+                         PROTOCOL_VERSION, (unsigned long)seq, addr.seg, addr.key, panel_state_name(state));
+    if (used != 0 && has_age) {
+        used = append(buffer, size, used, ",\"age_ms\":%lu", (unsigned long)age_ms);
+    }
+    return used == 0 ? 0 : append(buffer, size, used, "}");
 }
 
 size_t protocol_encode_unassigned_press(char *buffer, size_t size, key_addr_t addr)

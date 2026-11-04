@@ -21,6 +21,44 @@ static void test_parse_snapshot(void)
     CHECK(s_msg.snapshot.key_count == 3);
     CHECK(s_msg.snapshot.keys[1].state == PANEL_STATE_OUT && s_msg.snapshot.keys[1].rev == 128);
     CHECK(!s_msg.snapshot.keys[2].assigned && s_msg.snapshot.keys[2].addr.key == 2);
+    CHECK(s_msg.snapshot.has_config);
+    CHECK(s_msg.snapshot.config.brightness == 51);
+    CHECK(s_msg.snapshot.config.colors[PANEL_STATE_LOW].r == 255);
+    CHECK(s_msg.snapshot.config.colors[PANEL_STATE_LOW].g == 120);
+}
+
+static void test_snapshot_survives_invalid_config(void)
+{
+    const char *json = "{ \"v\": 1, \"t\": \"snapshot\", \"rev\": 1,"
+                       "  \"keys\": [ { \"addr\": \"0.0\", \"assigned\": true, \"state\": \"OK\", \"rev\": 1 } ],"
+                       "  \"config\": { \"brightness\": 999 } }";
+    CHECK(protocol_parse(json, &s_msg));
+    CHECK(s_msg.snapshot.key_count == 1);
+    CHECK(!s_msg.snapshot.has_config);
+
+    const char *without_config = "{ \"v\": 1, \"t\": \"snapshot\", \"rev\": 1, \"keys\": [] }";
+    CHECK(protocol_parse(without_config, &s_msg));
+    CHECK(!s_msg.snapshot.has_config);
+}
+
+static void test_parse_config(void)
+{
+    const char *json = "{ \"v\": 1, \"t\": \"config\", \"brightness\": 30,"
+                       "  \"colors\": { \"OK\": [1, 2, 3], \"LOW\": [4, 5, 6], \"OUT\": [7, 8, 9] } }";
+    CHECK(protocol_parse(json, &s_msg));
+    CHECK(s_msg.type == PROTOCOL_MSG_CONFIG);
+    CHECK(s_msg.config.brightness == 30);
+    CHECK(s_msg.config.colors[PANEL_STATE_OK].b == 3);
+    CHECK(s_msg.config.colors[PANEL_STATE_OUT].r == 7);
+
+    CHECK(!protocol_parse("{ \"v\": 1, \"t\": \"config\", \"brightness\": 256,"
+                          "  \"colors\": { \"OK\": [1, 2, 3], \"LOW\": [4, 5, 6], \"OUT\": [7, 8, 9] } }", &s_msg));
+    CHECK(!protocol_parse("{ \"v\": 1, \"t\": \"config\", \"brightness\": 30,"
+                          "  \"colors\": { \"OK\": [1, 2], \"LOW\": [4, 5, 6], \"OUT\": [7, 8, 9] } }", &s_msg));
+    CHECK(!protocol_parse("{ \"v\": 1, \"t\": \"config\", \"brightness\": 30,"
+                          "  \"colors\": { \"OK\": [1, 2, 3], \"LOW\": [4, 5, 6] } }", &s_msg));
+    CHECK(!protocol_parse("{ \"v\": 1, \"t\": \"config\", \"brightness\": 30,"
+                          "  \"colors\": { \"OK\": [1, 2, -3], \"LOW\": [4, 5, 6], \"OUT\": [7, 8, 9] } }", &s_msg));
 }
 
 static void test_parse_ack(void)
@@ -66,8 +104,11 @@ static void test_encode_messages(void)
     CHECK(strcmp(text, "{\"v\":1,\"t\":\"hello\",\"device_id\":\"6825dd21a970\",\"fw\":\"v0.2.0\","
                        "\"segments\":[{\"seg\":0,\"keys\":4},{\"seg\":2,\"keys\":8}]}") == 0);
 
-    protocol_encode_state_change(text, sizeof(text), 17, (key_addr_t){ 0, 2 }, PANEL_STATE_LOW, 5400);
+    protocol_encode_state_change(text, sizeof(text), 17, (key_addr_t){ 0, 2 }, PANEL_STATE_LOW, true, 5400);
     CHECK(strcmp(text, "{\"v\":1,\"t\":\"state_change\",\"seq\":17,\"addr\":\"0.2\",\"state\":\"LOW\",\"age_ms\":5400}") == 0);
+
+    protocol_encode_state_change(text, sizeof(text), 18, (key_addr_t){ 0, 2 }, PANEL_STATE_OUT, false, 0);
+    CHECK(strcmp(text, "{\"v\":1,\"t\":\"state_change\",\"seq\":18,\"addr\":\"0.2\",\"state\":\"OUT\"}") == 0);
 
     protocol_encode_unassigned_press(text, sizeof(text), (key_addr_t){ 0, 3 });
     CHECK(strcmp(text, "{\"v\":1,\"t\":\"unassigned_press\",\"addr\":\"0.3\"}") == 0);
@@ -78,12 +119,14 @@ static void test_encode_detects_overflow(void)
     char text[32];
     const protocol_segment_t segments[] = { { 0, 4 } };
     CHECK(protocol_encode_hello(text, sizeof(text), "6825dd21a970", "v0.2.0", segments, 1) == 0);
-    CHECK(protocol_encode_state_change(text, 10, 1, (key_addr_t){ 0, 0 }, PANEL_STATE_OK, 0) == 0);
+    CHECK(protocol_encode_state_change(text, 10, 1, (key_addr_t){ 0, 0 }, PANEL_STATE_OK, true, 0) == 0);
 }
 
 void test_protocol_run(void)
 {
     test_parse_snapshot();
+    test_snapshot_survives_invalid_config();
+    test_parse_config();
     test_parse_ack();
     test_parse_state_set_and_identify();
     test_parse_rejects_invalid_messages();

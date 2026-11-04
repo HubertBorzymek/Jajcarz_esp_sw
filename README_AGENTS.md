@@ -81,14 +81,18 @@ components/
   panel/               stany, cykl OK/LOW/OUT, debouncing, stan -> kolor
   presence/            tryby ACTIVE/DISPLAY/SLEEP
   status_led/          sygnalizator
-  storage/             NVS: stany; później konfiguracja i kolejka zmian
+  storage/             NVS: zapis i odczyt bloków danych
   net/                 Wi-Fi, WebSocket, kolejka odebranych wiadomości
   protocol/            kodowanie i dekodowanie JSON, bez sprzętu
   sync/                snapshot, ack, oczekujące zmiany, rev, bez sprzętu
 ```
 
-`controller/src/link.c` spina `net`, `protocol`, `sync` i `storage`. Klient
-WebSocket działa w swoim zadaniu, a wiadomości są przetwarzane w pętli głównej.
+`controller/src/link.c` spina `net`, `protocol` i `sync`. Klient WebSocket działa
+w swoim zadaniu, a wiadomości są przetwarzane w pętli głównej.
+`controller/src/persistence.c` raz na pętlę zapisuje różnice we flashu (stan,
+przypisanie, oczekiwanie, `rev`, konfiguracja) i loguje zmiany stanów.
+`storage` zna tylko bloki danych. Zmiana `key_record_t` lub `panel_config_t`
+zmienia rozmiar bloku, więc stary zapis jest pomijany.
 
 ## Wersjonowanie
 
@@ -99,9 +103,10 @@ z `git describe`.
 
 - Tag `v0.1.0` po potwierdzeniu sprzętu przez właściciela: diody, klawisze,
   zapis stanów po restarcie, sygnalizator na GPIO2.
-- Tag `v0.2.0` po testach z `docs/TESTY_MANUALNE.md`. Połączenie przez
-  prawdziwe Wi-Fi nie było jeszcze sprawdzone.
-- `v0.3.0`: kolejka zmian, przypisania i `rev` w NVS, stosowanie `config`,
-  `age_ms` pomijane po utracie zasilania. Dziś restart gubi niewysłane zmiany.
+- Tagi `v0.2.0` i `v0.3.0` po testach z `docs/TESTY_MANUALNE.md`. Połączenie
+  przez prawdziwe Wi-Fi nie było jeszcze sprawdzone.
+- Decyzja do potwierdzenia: zmiana sprzed restartu nie ma `age_ms`, więc serwer
+  liczy czas od odebrania i wygrywa ona z nowszą zmianą w aplikacji.
+- Dalej: konfiguracja Wi-Fi bez przebudowy, OTA, czujnik, segmenty.
 - `WS2812_MAX_PIXELS` to 5: dłuższy łańcuch wymaga większej pamięci RMT lub
   obsługi jej uzupełniania z przerwań.

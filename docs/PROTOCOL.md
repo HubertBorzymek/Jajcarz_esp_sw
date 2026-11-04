@@ -1,7 +1,6 @@
 # Protokół Jajcarz
 
-Wersja protokołu: **1**. Firmware `v0.2.0` nie stosuje jeszcze konfiguracji:
-ignoruje wiadomość `config` i to pole w `snapshot`. Dojdzie to w `v0.3.0`.
+Wersja protokołu: **1**.
 
 Wspólny kontrakt dla firmware ESP32, serwera testowego i aplikacji webowej.
 Zmiana niezgodna wstecz wymaga podniesienia pola `v`.

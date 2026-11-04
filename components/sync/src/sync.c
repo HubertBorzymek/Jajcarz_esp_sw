@@ -10,6 +10,17 @@ void sync_init(sync_t *sync)
     sync->next_seq = 1;
 }
 
+void sync_restore_key(sync_t *sync, size_t index, bool pending, uint32_t rev)
+{
+    sync_key_t *key = &sync->keys[index];
+    key->rev = rev;
+    key->pending = pending;
+    key->age_known = false;
+    if (pending) {
+        key->seq = sync->next_seq++;
+    }
+}
+
 void sync_on_disconnected(sync_t *sync)
 {
     sync->ready = false;
@@ -23,6 +34,7 @@ void sync_local_change(sync_t *sync, size_t index, uint32_t now_ms)
     sync_key_t *key = &sync->keys[index];
     key->pending = true;
     key->sent = false;
+    key->age_known = true;
     key->seq = sync->next_seq++;
     key->changed_ms = now_ms;
 }
@@ -99,7 +111,12 @@ bool sync_next_outgoing(sync_t *sync, const panel_t *panel, uint32_t now_ms, syn
         }
         key->sent = true;
         key->sent_ms = now_ms;
-        *out = (sync_outgoing_t){ .index = i, .seq = key->seq, .age_ms = now_ms - key->changed_ms };
+        *out = (sync_outgoing_t){
+            .index   = i,
+            .seq     = key->seq,
+            .has_age = key->age_known,
+            .age_ms  = key->age_known ? now_ms - key->changed_ms : 0,
+        };
         return true;
     }
     return false;

@@ -1,6 +1,5 @@
 #include "storage.h"
 
-#include <stdio.h>
 #include "esp_check.h"
 #include "nvs.h"
 #include "nvs_flash.h"
@@ -8,12 +7,6 @@
 #define NAMESPACE "jajcarz"
 
 static const char *const TAG = "storage";
-
-// Klucz NVS, np. "key0.2". Limit to 15 znaków, a najdłuższy adres ma 10.
-static void key_name(key_addr_t addr, char name[NVS_KEY_NAME_MAX_SIZE])
-{
-    snprintf(name, NVS_KEY_NAME_MAX_SIZE, "key%u.%u", addr.seg, addr.key);
-}
 
 esp_err_t storage_init(void)
 {
@@ -25,27 +18,27 @@ esp_err_t storage_init(void)
     return err;
 }
 
-esp_err_t storage_load_key_state(key_addr_t addr, uint8_t *state)
+esp_err_t storage_load(const char *name, void *data, size_t size)
 {
     nvs_handle_t handle;
     esp_err_t err = nvs_open(NAMESPACE, NVS_READONLY, &handle);
     if (err != ESP_OK) {
         return err;     // przed pierwszym zapisem przestrzeń nazw nie istnieje
     }
-    char name[NVS_KEY_NAME_MAX_SIZE];
-    key_name(addr, name);
-    err = nvs_get_u8(handle, name, state);
+    size_t stored_size = size;
+    err = nvs_get_blob(handle, name, data, &stored_size);
     nvs_close(handle);
+    if (err == ESP_ERR_NVS_INVALID_LENGTH || (err == ESP_OK && stored_size != size)) {
+        return ESP_ERR_NVS_NOT_FOUND;   // zapis ze starszej wersji firmware
+    }
     return err;
 }
 
-esp_err_t storage_save_key_state(key_addr_t addr, uint8_t state)
+esp_err_t storage_save(const char *name, const void *data, size_t size)
 {
     nvs_handle_t handle;
     ESP_RETURN_ON_ERROR(nvs_open(NAMESPACE, NVS_READWRITE, &handle), TAG, "otwarcie NVS");
-    char name[NVS_KEY_NAME_MAX_SIZE];
-    key_name(addr, name);
-    esp_err_t err = nvs_set_u8(handle, name, state);
+    esp_err_t err = nvs_set_blob(handle, name, data, size);
     if (err == ESP_OK) {
         err = nvs_commit(handle);
     }

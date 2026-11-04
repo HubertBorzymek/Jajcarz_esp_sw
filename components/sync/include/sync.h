@@ -11,6 +11,7 @@
 typedef struct {
     bool     pending;       // zmiana lokalna jeszcze niepotwierdzona
     bool     sent;          // wysłana w tym połączeniu
+    bool     age_known;     // po restarcie czas powstania zmiany jest nieznany
     uint32_t seq;
     uint32_t changed_ms;
     uint32_t sent_ms;
@@ -26,10 +27,14 @@ typedef struct {
 typedef struct {
     size_t   index;
     uint32_t seq;
+    bool     has_age;
     uint32_t age_ms;
 } sync_outgoing_t;
 
 void sync_init(sync_t *sync);
+
+// Przywraca klawisz po restarcie. Niewysłana zmiana wraca do kolejki.
+void sync_restore_key(sync_t *sync, size_t index, bool pending, uint32_t rev);
 
 // Po utracie połączenia zmiany czekają, aż serwer przyśle kolejny snapshot.
 void sync_on_disconnected(sync_t *sync);

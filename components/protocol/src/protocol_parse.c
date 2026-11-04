@@ -32,6 +32,39 @@ static bool parse_u32(const cJSON *item, uint32_t *value)
     return true;
 }
 
+static bool parse_channel(const cJSON *item, uint8_t *value)
+{
+    if (!cJSON_IsNumber(item) || item->valueint < 0 || item->valueint > UINT8_MAX) {
+        return false;
+    }
+    *value = (uint8_t)item->valueint;
+    return true;
+}
+
+static bool parse_color(const cJSON *item, rgb_t *color)
+{
+    return cJSON_IsArray(item) && cJSON_GetArraySize(item) == 3
+           && parse_channel(cJSON_GetArrayItem(item, 0), &color->r)
+           && parse_channel(cJSON_GetArrayItem(item, 1), &color->g)
+           && parse_channel(cJSON_GetArrayItem(item, 2), &color->b);
+}
+
+// Obiekt z polami "brightness" i "colors".
+static bool parse_config(const cJSON *object, panel_config_t *config)
+{
+    if (!parse_channel(cJSON_GetObjectItemCaseSensitive(object, "brightness"), &config->brightness)) {
+        return false;
+    }
+    const cJSON *colors = cJSON_GetObjectItemCaseSensitive(object, "colors");
+    for (int i = 0; i < PANEL_STATE_COUNT; i++) {
+        const char *name = panel_state_name((panel_state_t)i);
+        if (!parse_color(cJSON_GetObjectItemCaseSensitive(colors, name), &config->colors[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static bool parse_snapshot_key(const cJSON *item, protocol_key_t *key)
 {
     if (!parse_addr(cJSON_GetObjectItemCaseSensitive(item, "addr"), &key->addr)) {
@@ -60,6 +93,7 @@ static bool parse_snapshot(const cJSON *root, protocol_snapshot_t *snapshot)
         }
         snapshot->key_count++;
     }
+    snapshot->has_config = parse_config(cJSON_GetObjectItemCaseSensitive(root, "config"), &snapshot->config);
     return true;
 }
 
@@ -107,6 +141,10 @@ static bool parse_body(const cJSON *root, protocol_msg_t *msg)
     if (strcmp(type->valuestring, "state_set") == 0) {
         msg->type = PROTOCOL_MSG_STATE_SET;
         return parse_state_set(root, &msg->state_set);
+    }
+    if (strcmp(type->valuestring, "config") == 0) {
+        msg->type = PROTOCOL_MSG_CONFIG;
+        return parse_config(root, &msg->config);
     }
     if (strcmp(type->valuestring, "identify") == 0) {
         msg->type = PROTOCOL_MSG_IDENTIFY;

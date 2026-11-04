@@ -87,8 +87,8 @@ powershell -ExecutionPolicy Bypass -File tests\host\run.ps1
 |---|---|
 | `v0.0.0` | firmware testowy bez sieci |
 | `v0.1.0` | podział na moduły, adresy, tryby, sygnalizator, zapis stanów, partycje OTA |
-| `v0.2.0` | Wi-Fi, WebSocket, protokół, praca offline i konflikty do restartu |
-| `v0.3.0` | kolejka zmian, przypisania i `rev` we flashu, konfiguracja z serwera |
+| `v0.2.0` | Wi-Fi, WebSocket, protokół, praca offline, konflikty |
+| `v0.3.0` | niewysłane zmiany, przypisania i konfiguracja przetrwają restart |
 | później | konfiguracja Wi-Fi bez przebudowy, OTA, czujnik, segmenty |
 
 Historia zmian: [CHANGELOG.md](CHANGELOG.md).

@@ -37,16 +37,6 @@ static size_t collect_addrs(key_addr_t *addrs)
     return count;
 }
 
-static void restore_states(void)
-{
-    for (size_t i = 0; i < s_panel.key_count; i++) {
-        uint8_t state;
-        if (storage_load_key_state(s_panel.keys[i].addr, &state) == ESP_OK) {
-            panel_set_state(&s_panel, i, (panel_state_t)state);
-        }
-    }
-}
-
 static void init_debounce(void)
 {
     uint32_t now = now_ms();
@@ -73,11 +63,6 @@ static void on_key_pressed(size_t index, uint32_t now)
         link_key_unassigned(index);
         return;
     }
-    ESP_LOGI(TAG, "%u.%u -> %s", key->addr.seg, key->addr.key, panel_state_name(key->state));
-    esp_err_t err = storage_save_key_state(key->addr, (uint8_t)key->state);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Zapis stanu %u.%u: %s", key->addr.seg, key->addr.key, esp_err_to_name(err));
-    }
     link_key_changed(index, now);
 }
 
@@ -103,7 +88,6 @@ void controller_init(void)
     key_addr_t addrs[PANEL_MAX_KEYS];
     size_t count = collect_addrs(addrs);
     panel_init(&s_panel, addrs, count);
-    restore_states();
 
     ESP_ERROR_CHECK(segments_show());   // zgaszenie diod po restarcie
     boot_test_run(addrs, count);

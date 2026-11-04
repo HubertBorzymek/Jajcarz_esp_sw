@@ -1,13 +1,12 @@
 #include "link.h"
 
 #include "esp_app_desc.h"
-#include "esp_err.h"
 #include "esp_log.h"
 #include "net.h"
+#include "persistence.h"
 #include "protocol.h"
 #include "segments.h"
 #include "status_led.h"
-#include "storage.h"
 #include "sync.h"
 
 #define TX_BUFFER_SIZE  256
@@ -39,21 +38,6 @@ static void send_hello(void)
     }
 }
 
-static void save_changed_states(const panel_state_t *before)
-{
-    for (size_t i = 0; i < s_panel->key_count; i++) {
-        const panel_key_t *key = &s_panel->keys[i];
-        if (key->state == before[i]) {
-            continue;
-        }
-        ESP_LOGI(TAG, "%u.%u -> %s (serwer)", key->addr.seg, key->addr.key, panel_state_name(key->state));
-        esp_err_t err = storage_save_key_state(key->addr, (uint8_t)key->state);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Zapis stanu: %s", esp_err_to_name(err));
-        }
-    }
-}
-
 static void apply_identify(const protocol_identify_t *identify, uint32_t now_ms)
 {
     size_t index;
@@ -62,16 +46,19 @@ static void apply_identify(const protocol_identify_t *identify, uint32_t now_ms)
     }
 }
 
+static void apply_snapshot(const protocol_snapshot_t *snapshot)
+{
+    sync_apply_snapshot(&s_sync, s_panel, snapshot);
+    if (snapshot->has_config) {
+        s_panel->config = snapshot->config;
+    }
+}
+
 static void apply_message(const protocol_msg_t *msg, uint32_t now_ms)
 {
-    panel_state_t before[PANEL_MAX_KEYS];
-    for (size_t i = 0; i < s_panel->key_count; i++) {
-        before[i] = s_panel->keys[i].state;
-    }
-
     switch (msg->type) {
         case PROTOCOL_MSG_SNAPSHOT:
-            sync_apply_snapshot(&s_sync, s_panel, &msg->snapshot);
+            apply_snapshot(&msg->snapshot);
             break;
         case PROTOCOL_MSG_ACK:
             if (sync_apply_ack(&s_sync, s_panel, &msg->ack)) {
@@ -81,11 +68,13 @@ static void apply_message(const protocol_msg_t *msg, uint32_t now_ms)
         case PROTOCOL_MSG_STATE_SET:
             sync_apply_state_set(&s_sync, s_panel, &msg->state_set);
             break;
+        case PROTOCOL_MSG_CONFIG:
+            s_panel->config = msg->config;
+            break;
         case PROTOCOL_MSG_IDENTIFY:
             apply_identify(&msg->identify, now_ms);
             break;
     }
-    save_changed_states(before);
 }
 
 static void update_connection(void)
@@ -122,7 +111,8 @@ static void send_pending_changes(uint32_t now_ms)
     while (sync_next_outgoing(&s_sync, s_panel, now_ms, &out)) {
         const panel_key_t *key = &s_panel->keys[out.index];
         char text[TX_BUFFER_SIZE];
-        size_t length = protocol_encode_state_change(text, sizeof(text), out.seq, key->addr, key->state, out.age_ms);
+        size_t length = protocol_encode_state_change(text, sizeof(text), out.seq, key->addr, key->state,
+                                                     out.has_age, out.age_ms);
         if (length == 0 || !net_send(text)) {
             ESP_LOGW(TAG, "Nie wysłano zmiany %u.%u", key->addr.seg, key->addr.key);
             return;     // brak ack, więc sync ponowi wysyłkę
@@ -134,6 +124,7 @@ void link_init(panel_t *panel)
 {
     s_panel = panel;
     sync_init(&s_sync);
+    persistence_restore(panel, &s_sync);
     net_init();
 }
 
@@ -142,6 +133,7 @@ void link_tick(uint32_t now_ms)
     update_connection();
     receive_messages(now_ms);
     send_pending_changes(now_ms);
+    persistence_flush(s_panel, &s_sync);
 }
 
 void link_key_changed(size_t index, uint32_t now_ms)

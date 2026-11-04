@@ -2,6 +2,21 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-04 (v0.3.0, bez taga)
+
+- Dodano `controller/src/persistence.c`, `storage` przepisany na bloki danych.
+- `sync_restore_key`: niewysłana zmiana po restarcie idzie bez `age_ms`.
+- Protokół: obsługa `config` i `config` w `snapshot`. Błędna konfiguracja
+  w `snapshot` nie unieważnia stanów klawiszy.
+- Serwer: edycja konfiguracji na stronie, `POST /api/devices/{id}/config`.
+  Naprawiono zatrzymywanie odświeżania strony po kliknięciu pola wyboru.
+- Stare zapisy `key<seg>.<key>` są pomijane, nazwy to teraz `k<seg>.<key>`.
+- Zweryfikowano: testy hosta OK, 18 testów serwera OK, build i start na płytce
+  z tymczasowym SSID i bez konfiguracji, także po restarcie.
+- Niezweryfikowane: zapis i odczyt po naciśnięciu przycisków, prawdziwe Wi-Fi.
+- Na płytce: firmware bez konfiguracji z kodem tej wersji.
+- Następny krok: testy właściciela, tagi, potem decyzja o kolejnym zakresie.
+
 ## 2026-11-04 (v0.2.0, bez taga)
 
 - Dodano `net`, `protocol`, `sync`, `controller/src/link.c`, `config/secrets.example.h`.

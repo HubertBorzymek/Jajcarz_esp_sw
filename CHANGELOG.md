@@ -17,6 +17,8 @@
 - Synchronizacja stanów w obie strony, praca bez sieci do restartu, konflikty.
 - Przypisywanie klawiszy i identyfikacja klawisza miganiem.
 - Lokalne dane w `config/secrets.h`, poza gitem.
+- Niewysłane zmiany, przypisania i numery zmian przetrwają restart.
+- Kolory i jasność ustawiane z serwera i zapisywane we flashu.
 
 ### Zmieniono
 - Kod podzielony z jednego pliku na komponenty.

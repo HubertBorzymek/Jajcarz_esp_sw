@@ -109,3 +109,30 @@ Do testów konfliktów odłącz ESP32 od sieci, zamiast zatrzymywać serwer.
 - [ ] Z pustą nazwą Wi-Fi panel działa jak w `v0.1.0`, a log pokazuje brak konfiguracji.
 
 Po zaliczeniu tej sekcji: tag `v0.2.0`.
+
+## v0.3.0: pamięć po restarcie i konfiguracja
+
+Przygotowanie jak dla `v0.2.0`. Stany zapisane przez starsze wersje firmware nie
+są przenoszone, więc pierwszy start po aktualizacji pokazuje stany domyślne.
+
+### Niewysłane zmiany
+
+- [ ] Odłącz panel od sieci, zmień kolor przycisku i naciśnij EN: kolor wraca.
+- [ ] Przywróć sieć: zmiana z panelu pojawia się na stronie.
+- [ ] Zrób to samo, odłączając USB zamiast EN: zmiana też dociera na stronę.
+- [ ] Zmiana sprzed restartu nie ma znanego czasu, więc wygrywa nawet z nowszą
+      zmianą na stronie. Sprawdź, czy takie działanie Ci odpowiada.
+
+### Przypisania
+
+- [ ] Odznacz „przypisany” na stronie: dioda gaśnie.
+- [ ] Odłącz panel od sieci i naciśnij EN: ta dioda nadal jest zgaszona.
+
+### Konfiguracja
+
+- [ ] Zmiana jasności na stronie zmienia jasność diod.
+- [ ] Zmiana koloru stanu na stronie zmienia kolor diod w tym stanie.
+- [ ] Odłącz panel od sieci i naciśnij EN: jasność i kolory zostają.
+- [ ] Zmień konfigurację przy odłączonym panelu: po połączeniu panel ją stosuje.
+
+Po zaliczeniu tej sekcji: tag `v0.3.0`.
