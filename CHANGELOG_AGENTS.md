@@ -2,6 +2,14 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-05 (PROTOCOL.md)
+
+- Uzgodnione z właścicielem doprecyzowania pod aplikację: `rev` ma luki, `snapshot`
+  w trakcie połączenia, `ack` dla klawisza bez produktu. Kopia w `Jajcarz_apk_sw`.
+- Firmware obsługuje to bez zmian, `v` pozostaje 1.
+- Otwarte: test `wss` na płytce. Let's Encrypt podaje łańcuch `YE1`, `Root YE`,
+  `ISRG Root X2`, a pakiet panelu ma X1 i X2, ale nie ma `Root YE`.
+
 ## 2026-11-05 (GitHub)
 
 - Podpięto `origin` (`Jajcarz_esp_sw`, publiczne), wypchnięto `rev0` i tagi.

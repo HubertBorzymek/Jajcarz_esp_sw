@@ -12,7 +12,7 @@ Zmiana niezgodna wstecz wymaga podniesienia pola `v`.
 | `device_id` | 12 znaków hex z adresu MAC, np. `6825dd21a970` |
 | `addr` | adres klawisza `segment.klawisz`, np. `0.2` |
 | `state` | `OK` (jest), `LOW` (kończy się), `OUT` (nie ma) |
-| `rev` | licznik zmian urządzenia, nadawany wyłącznie przez serwer |
+| `rev` | licznik zmian, nadawany wyłącznie przez serwer |
 
 ESP nie zna produktów. Przypisanie `produkt -> device_id + addr` istnieje tylko
 w aplikacji webowej. Numer segmentu wynika z adresu sprzętowego modułu, a nie
@@ -32,6 +32,10 @@ Serwer przechowuje dla każdego klawisza ostatnią zmianę:
 Klient porównuje `rev`: jeśli serwer ma wyższy, klient się aktualizuje.
 `changed_by` i `changed_at` służą do wyświetlania informacji i diagnostyki,
 nie do decydowania o aktualizacji.
+
+`rev` zawsze rośnie, ale może mieć luki, a nowa wartość nie musi oznaczać zmiany
+stanu. Rośnie na przykład przy przypięciu produktu do klawisza. Klient tylko
+porównuje wartości i nie wyciąga wniosków z różnicy między nimi.
 
 ## Połączenie
 
@@ -106,6 +110,9 @@ naciśnięcie klawisza. Nie jest kolejkowane offline.
 ESP stosuje `snapshot`, z wyjątkiem klawiszy z niewysłaną zmianą. Te rozstrzyga
 `ack`.
 
+Serwer może wysłać `snapshot` w dowolnej chwili połączenia: po zmianie przypisań,
+a przy zmianie wielu klawiszy naraz zamiast serii `state_set`.
+
 ### `ack`
 
 ```json
@@ -115,6 +122,9 @@ ESP stosuje `snapshot`, z wyjątkiem klawiszy z niewysłaną zmianą. Te rozstrz
 
 Odpowiedź zawsze zawiera stan obowiązujący na serwerze. Przy `accepted: false`
 ESP ustawia na klawiszu ten stan.
+
+Zmiana klawisza bez produktu dostaje `accepted: false` ze stanem `OK` i bieżącym
+`rev`, a zaraz po niej serwer wysyła `snapshot`, który gasi ten klawisz.
 
 ### `state_set`
 

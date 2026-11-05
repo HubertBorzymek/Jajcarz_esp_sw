@@ -5,6 +5,8 @@
 ### Zmieniono
 - Repozytorium na GitHubie: `Jajcarz_esp_sw`, a w dokumentacji stan projektu
   i link do repozytorium aplikacji webowej.
+- `docs/PROTOCOL.md`: doprecyzowano luki w `rev`, wysyłanie `snapshot` w trakcie
+  połączenia i `ack` dla klawisza bez produktu. Wersja protokołu i kod bez zmian.
 
 ## v0.3.0 - 2026-11-04
 
