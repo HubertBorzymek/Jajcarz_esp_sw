@@ -12,11 +12,18 @@ To repozytorium zawiera **tylko firmware ESP32**.
 
 | Część | Gdzie | Rola |
 |---|---|---|
-| Firmware panelu | to repozytorium | przyciski, diody, synchronizacja |
-| Aplikacja webowa | osobny projekt (Azure) | produkty, przypisania, statusy, konfiguracja |
-| Serwer testowy | `Projects\Visual Studio\Jajcarz_test_server` | testowanie firmware bez aplikacji |
+| Firmware panelu | [Jajcarz_esp_sw](https://github.com/HubertBorzymek/Jajcarz_esp_sw) (to repozytorium) | przyciski, diody, synchronizacja |
+| Aplikacja webowa | [Jajcarz_apk_sw](https://github.com/HubertBorzymek/Jajcarz_apk_sw) | produkty, przypisania, statusy, konfiguracja |
+| Serwer testowy | lokalnie: `Projects\Visual Studio\Jajcarz_test_server` | testowanie firmware bez aplikacji |
 
-Komunikację opisuje [docs/PROTOCOL.md](docs/PROTOCOL.md).
+Komunikację opisuje [docs/PROTOCOL.md](docs/PROTOCOL.md). To wspólny kontrakt
+firmware i aplikacji webowej.
+
+## Stan projektu
+
+Firmware `v0.3.0` przeszedł testy na sprzęcie, razem z serwerem testowym przez
+prawdziwe Wi-Fi. Na tym etapie wystarcza, a kolejny krok to aplikacja webowa.
+Po jej wdrożeniu w `config/secrets.h` zmieniają się tylko adres serwera i token.
 
 ## Jak to działa
 
@@ -81,7 +88,8 @@ powershell -ExecutionPolicy Bypass -File tests\host\run.ps1
 
 ## Wersje
 
-- Gałąź `revN` oznacza generację prototypu, obecnie `rev0`.
+- Gałąź `revN` oznacza generację prototypu, obecnie `rev0`. Jest też główną
+  gałęzią repozytorium na GitHubie.
 - Tag `vX.Y.Z` oznacza wersję oprogramowania.
 
 | Wersja | Zakres |

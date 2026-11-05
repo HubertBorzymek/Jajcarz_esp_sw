@@ -1,5 +1,11 @@
 # Historia zmian
 
+## Niewydane
+
+### Zmieniono
+- Repozytorium na GitHubie: `Jajcarz_esp_sw`, a w dokumentacji stan projektu
+  i link do repozytorium aplikacji webowej.
+
 ## v0.3.0 - 2026-11-04
 
 ### Dodano

@@ -2,6 +2,13 @@
 
 Najnowsze na górze. Krótko: co, dlaczego, co dalej.
 
+## 2026-11-05 (GitHub)
+
+- Podpięto `origin` (`Jajcarz_esp_sw`, publiczne), wypchnięto `rev0` i tagi.
+  Historię sprawdzono pod kątem hasła i nazwy Wi-Fi: brak.
+- Firmware wystarcza na ten etap, kolejny krok to `Jajcarz_apk_sw`.
+- Serwer testowy nie ma repo zdalnego.
+
 ## 2026-11-04 (tagi v0.2.0 i v0.3.0)
 
 - Właściciel zgłosił „wszystko przeszło”, w tym pierwsze połączenie przez Wi-Fi.

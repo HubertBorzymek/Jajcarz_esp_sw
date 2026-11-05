@@ -17,7 +17,10 @@ Zakres tego repo: tylko ESP32.
 - Esptool: `& "$env:IDF_PYTHON_ENV_PATH\Scripts\python.exe" -m esptool --port COM3 ...`
 - Monitor portu w VS Code blokuje COM3.
 - Serwer testowy: `C:\Users\leemi\Documents\Projects\Visual Studio\Jajcarz_test_server`
-  (osobne repo, ASP.NET Core, net10.0, VS 2026).
+  (osobne repo, tylko lokalne, ASP.NET Core, net10.0, VS 2026).
+- Repo: `origin` = `https://github.com/HubertBorzymek/Jajcarz_esp_sw`, publiczne,
+  gałąź `rev0`. Tagi wypychaj osobno: `git push origin --tags`.
+- Aplikacja webowa: `https://github.com/HubertBorzymek/Jajcarz_apk_sw`.
 
 ## Sprzęt rev0
 
@@ -103,8 +106,12 @@ z `git describe`.
 
 ## Otwarte
 
-- Testy sprzętowe do `v0.3.0` zaliczone. Nowy zakres tylko po decyzji właściciela.
-- Dalej: połączenie z aplikacją na Azure, konfiguracja Wi-Fi bez przebudowy, OTA,
-  odporność, czujnik, segmenty, docelowy sygnalizator.
+- Testy sprzętowe do `v0.3.0` zaliczone. Firmware na razie wystarcza, a prace
+  przeszły do aplikacji webowej. Nowy zakres tylko po decyzji właściciela.
+- Integracja z aplikacją: `SECRET_SERVER_URL` na `wss://...` i własny token.
+  `wss://` z pakietem certyfikatów jest w kodzie, ale nietestowane.
+- Zmiana `docs/PROTOCOL.md` dotyczy też aplikacji webowej. Uzgodnij ją w obu repo.
+- Dalej: konfiguracja Wi-Fi bez przebudowy, OTA, odporność, czujnik, segmenty,
+  docelowy sygnalizator.
 - `WS2812_MAX_PIXELS` to 5: dłuższy łańcuch wymaga większej pamięci RMT lub
   obsługi jej uzupełniania z przerwań.
